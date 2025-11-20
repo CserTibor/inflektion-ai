@@ -1,0 +1,32 @@
+services:
+  php:
+    build: dev-docker/php-fpm
+    container_name: inflektion-api
+    working_dir: /app
+    environment:
+      - XDEBUG_IDE_KEY=PHPSTORM
+      - XDEBUG_DISCOVER_CLIENT_HOST=0
+      - PHP_IDE_CONFIG=serverName=example-local
+      - WEB_DOCUMENT_ROOT=/app/public
+      - PHP_MEMORY_LIMIT=-1
+    volumes:
+      - .:/app:cached
+    ports:
+      - "8080:80"
+
+  database:
+    image: mysql:8.0.20
+    container_name: local-db
+    command: [ '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-authentication-plugin=mysql_native_password' ]
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3006:3306'
+    volumes:
+      - local-data:/var/lib/mysql
+
+volumes:
+  local-data:
