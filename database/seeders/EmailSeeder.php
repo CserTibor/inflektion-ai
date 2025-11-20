@@ -187,7 +187,7 @@ EOD;
                 'dkim' => 'test',
                 'SPF' => 'test',
                 'spam_score' => 0.5,
-                'raw_text' => null,
+                'raw_text' => '',
                 'sender_ip' => 'test',
                 'to' => 'test',
                 'email' => $emailString,
