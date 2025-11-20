@@ -19,6 +19,8 @@ setup:
 	$(DOCKER_EXEC) $(APP_SERVICE) composer install
 	@echo "Create app key $(APP_SERVICE) container..."
 	$(DOCKER_EXEC) $(APP_SERVICE) php artisan key:generate
+	@echo "Create JWT secret $(APP_SERVICE) container..."
+	$(DOCKER_EXEC) $(APP_SERVICE) php artisan jwt:secret
 
 # ===================================================
 # Up: start containers

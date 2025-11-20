@@ -13,14 +13,14 @@ class AuthenticationMiddleware
 
     public function handle(Request $request, Closure $next): Response
     {
-        if (! JWTAuth::getToken()) {
-            return response()->json(['error' => 'missing_token'], Response::HTTP_UNAUTHORIZED);
-        }
-
         try {
+            if (!JWTAuth::getToken()) {
+                return response()->json(['error' => 'missing_token'], Response::HTTP_UNAUTHORIZED);
+            }
+
             $token = JWTAuth::parseToken();
 
-            if (! $token->authenticate()) {
+            if (!$token->authenticate()) {
                 return response()->json(['error' => 'unauthorized'], Response::HTTP_UNAUTHORIZED);
             }
         } catch (Exception) {
