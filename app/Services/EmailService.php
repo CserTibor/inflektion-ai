@@ -4,8 +4,11 @@ namespace App\Services;
 
 use App\Models\SuccessfulEmail;
 use Exception;
+use eXorus\PhpMimeMailParser\Parser;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use ZBateson\MailMimeParser\MailMimeParser;
+use ZBateson\MailMimeParser\Message;
 
 class EmailService
 {
@@ -106,20 +109,11 @@ class EmailService
      */
     private function getBodyContent(string $rawEmail): string
     {
-        $start = stripos($rawEmail, '<body');
-        $end = strripos($rawEmail, '</body>');
+        $parser = new MailMimeParser();
+        $message = $parser->parse($rawEmail,false);
 
-        if ($start !== false && $end !== false && $end > $start) {
-            $bodyContent = substr($rawEmail, $start, $end - $start + 7); // +7 to include </body>
-        } else {
-            $start = stripos($rawEmail, '<html');
-            $end = strripos($rawEmail, '</html>');
-            if ($start !== false && $end !== false && $end > $start) {
-                $bodyContent = substr($rawEmail, $start, $end - $start + 7);
-            } else {
-                $bodyContent = $rawEmail;
-            }
-        }
-        return $bodyContent;
+        $body = $message->getTextContent(0,'UTF-8');
+
+        return preg_replace('/[\x{10000}-\x{10FFFF}]/u', '', $body);
     }
 }
